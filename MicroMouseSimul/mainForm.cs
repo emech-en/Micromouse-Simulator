@@ -21,8 +21,23 @@ namespace MicroMouseSimul
 		{
 			world = new MouseWorld ();
 			InitializeComponent ();
+			StoreNames (new String[] { "salam", "hey" }.ToList ());
 		}
 
+		public void StoreNames(List<string> input)
+		{
+			comboBox1.BeginUpdate ();
+			if (comboBox1.InvokeRequired)
+				comboBox1.Invoke((MethodInvoker)delegate {
+					StoreNames(input);
+				});
+			else
+			{
+				comboBox1.Items.Clear();
+				comboBox1.Items.AddRange(input.ToArray());
+			}
+			comboBox1.EndUpdate ();
+		}
 		private void mainForm_Load (object sender, EventArgs e)
 		{
 		}
@@ -34,7 +49,7 @@ namespace MicroMouseSimul
 			for (int i = 0; i < 16; i++) {
 				for (int j = 0; j < 16; j++) {
 					drawCell (cells [i, j], i, j, g);
-					drawCellData (algorithm.GetCellData (i, j), i, j, g);
+					drawCellData (world.GetCellData (i, j), i, j, g);
 				}
 			}
 			drawRobot (world._robot, g);
@@ -149,59 +164,30 @@ namespace MicroMouseSimul
 
 		private void algorithmRunner_DoWork (object sender, DoWorkEventArgs e)
 		{
-			algorithm = new DeadEnd ();
-			int turnCount = 0;
-			int moveCount = 0;
-			Dictionary<int, int> cellVisited = new Dictionary<int, int> ();
+			world._algorithm = new DeadEnd ();
+		
 			do {
-				if (algorithmRunner.WorkerSupportsCancellation)
-					return;
+				picMazeHolder.Invalidate ();
+				System.Threading.Thread.CurrentThread.Join (150);
+			} while (world.Go_go_go());
+			picMazeHolder.Invalidate ();
+			System.Threading.Thread.CurrentThread.Join (150);
 
-				world._robot.Go ();
-				picMazeHolder.Invalidate ();
-				System.Threading.Thread.CurrentThread.Join (150);
-				if (algorithmRunner.WorkerSupportsCancellation)
-					return;
-                
-				var action = algorithm.Think (world._robot, world.getCurrentCell ());
-				picMazeHolder.Invalidate ();
-				System.Threading.Thread.CurrentThread.Join (150);
-				if (algorithmRunner.WorkerSupportsCancellation)
-					return;
-                
-				switch (action) {
-				case enumRobotAction.TurnLeft:
-					world._robot.TrunLeft ();
-					turnCount++;
-					break;
-				case enumRobotAction.TurnRight:
-					world._robot.TrunRight ();
-					turnCount++;
-					break;
-				case enumRobotAction.TurnBack:
-					world._robot.TrunBack ();
-					turnCount++;
-					break;
-				case enumRobotAction.GoStraight:
-					break;
-				default:
-					break;
-				}
-				moveCount++;
-				lblTurnCount.Text = "Turns : " + turnCount;
-				lblMoveCount.Text = "Moves : " + moveCount;
-				if (cellVisited.ContainsKey(world._robot.XLocation*100+world._robot.YLocation))
-				{
-					cellVisited[world._robot.XLocation*100+world._robot.YLocation]++;
-				}
-				else
-				{
-					cellVisited[world._robot.XLocation*100+world._robot.YLocation]=1;
-				}
-				lblCellVisitedCount.Text = "Unique Cells : "+cellVisited.Keys.Count;
-				picMazeHolder.Invalidate ();
-				System.Threading.Thread.CurrentThread.Join (150);
-			} while (world.NotFinished());
+//				moveCount++;
+//				lblTurnCount.Text = "Turns : " + turnCount;
+//				lblMoveCount.Text = "Moves : " + moveCount;
+//				if (cellVisited.ContainsKey(world._robot.XLocation*100+world._robot.YLocation))
+//				{
+//					cellVisited[world._robot.XLocation*100+world._robot.YLocation]++;
+//				}
+//				else
+//				{
+//					cellVisited[world._robot.XLocation*100+world._robot.YLocation]=1;
+//				}
+//				lblCellVisitedCount.Text = "Unique Cells : "+cellVisited.Keys.Count;
+//				picMazeHolder.Invalidate ();
+//				System.Threading.Thread.CurrentThread.Join (150);
+
 		}
 
 		private void btnStop_Click (object sender, EventArgs e)
@@ -209,4 +195,18 @@ namespace MicroMouseSimul
 			algorithmRunner.WorkerSupportsCancellation = true;
 		}
 	}
+
+	public class ComboboxItem
+	{
+		public string Text { get; set; }
+		public object Value { get; set; }
+
+		public override string ToString()
+		{
+			return Text;
+		}
+	}
+
+
+
 }

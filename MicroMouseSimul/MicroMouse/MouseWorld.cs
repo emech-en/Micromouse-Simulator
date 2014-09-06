@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using MicroMouseSimul.Algorithms;
 
 
 namespace MicroMouseSimul.MicroMouse
@@ -13,6 +14,7 @@ namespace MicroMouseSimul.MicroMouse
     {
         public Maze _maze;
         public Robot _robot;
+		public IAlgorithm _algorithm;
 
         public MouseWorld()
         {
@@ -97,5 +99,39 @@ namespace MicroMouseSimul.MicroMouse
         {
             return _maze.GetCells()[_robot.YLocation, _robot.XLocation];
         }
+
+		bool isNotStarted = false;
+		public int count;
+		public int turnCount;
+		public int cellVisitedCount;
+		public bool Go_go_go ()
+		{
+			if (_algorithm == null) {
+				throw new Exception ("Algorithm is not instantiated.");
+			}
+			var action = _algorithm.Think (_robot, getCurrentCell ());
+			switch (action) {
+				case enumRobotAction.TurnLeft:
+					this._robot.TrunLeft ();
+				break;
+				case enumRobotAction.TurnRight:
+					this._robot.TrunRight ();
+				break;
+				case enumRobotAction.TurnBack:
+					this._robot.TrunBack ();
+				break;
+				default:
+				break;
+			}
+			_robot.Go ();
+			return this.NotFinished ();
+		}
+		public string GetCellData(int x, int y)
+		{
+			if (_algorithm == null)
+				return "";
+			else
+				return this._algorithm.GetCellData (x, y);
+		}
     }
 }

@@ -122,6 +122,9 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 24);
             this.comboBox1.TabIndex = 3;
+			this.comboBox1.Items.Insert (0, "Saalam2");
+			this.comboBox1.Items.Insert (1, "Saalam2");
+			this.comboBox1.Items.Insert (2, "Saalam2");
             // 
             // lblAlgorithm
             // 
