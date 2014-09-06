@@ -14,7 +14,6 @@ namespace MicroMouseSimul
 {
     public partial class mainForm : Form
     {
-        private int[,] iCellWalls = new int[16, 16];
         private IAlgorithm algorithm = new DeadEnd();
 
         private MouseWorld world;

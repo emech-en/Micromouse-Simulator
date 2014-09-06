@@ -28,7 +28,7 @@ namespace MicroMouseSimul.MicroMouse
 
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 Console.WriteLine("Unable to save our friends' information");
 
