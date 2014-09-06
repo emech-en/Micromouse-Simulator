@@ -29,10 +29,15 @@
         private void InitializeComponent()
         {
             this.picMazeHolder = new System.Windows.Forms.PictureBox();
-            this.panel1 = new System.Windows.Forms.Panel();
+			this.panel1 = new System.Windows.Forms.Panel();
+            this.pnlPicMazeHolder = new System.Windows.Forms.Panel();
+			this.pnlMazeSolvingStatusHolder = new System.Windows.Forms.Panel();
             this.btnStop = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.lblAlgorithm = new System.Windows.Forms.Label();
+			this.lblTurnCount = new System.Windows.Forms.Label ();
+			this.lblMoveCount = new System.Windows.Forms.Label ();
+			this.lblCellVisitedCount = new System.Windows.Forms.Label ();
             this.btnEditMap = new System.Windows.Forms.Button();
             this.btnLoadMap = new System.Windows.Forms.Button();
             this.btnRun = new System.Windows.Forms.Button();
@@ -67,6 +72,32 @@
             this.panel1.Padding = new System.Windows.Forms.Padding(10);
             this.panel1.Size = new System.Drawing.Size(631, 47);
             this.panel1.TabIndex = 1;
+
+			// 
+			// pnlMazeSolvingStatusHolder
+			// 
+			this.pnlMazeSolvingStatusHolder.Controls.Add(this.lblTurnCount);
+			this.pnlMazeSolvingStatusHolder.Controls.Add (this.lblMoveCount);
+			this.pnlMazeSolvingStatusHolder.Controls.Add (this.lblCellVisitedCount);
+			this.pnlMazeSolvingStatusHolder.Cursor = System.Windows.Forms.Cursors.Default;
+			this.pnlMazeSolvingStatusHolder.Dock = System.Windows.Forms.DockStyle.Right;
+			this.pnlMazeSolvingStatusHolder.Location = new System.Drawing.Point(0, 0);
+			this.pnlMazeSolvingStatusHolder.Name = "pnlMazeSolvingStatusHolder";
+			this.pnlMazeSolvingStatusHolder.Padding = new System.Windows.Forms.Padding(0);
+			this.pnlMazeSolvingStatusHolder.Size = new System.Drawing.Size(130, 519);
+			this.pnlMazeSolvingStatusHolder.TabIndex = 2;
+			// 
+			// pnlPicMazeHolder
+			// 
+			this.pnlPicMazeHolder.Controls.Add(this.picMazeHolder);
+			this.pnlPicMazeHolder.Controls.Add(this.pnlMazeSolvingStatusHolder);
+			this.pnlPicMazeHolder.Cursor = System.Windows.Forms.Cursors.Default;
+			this.pnlPicMazeHolder.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pnlPicMazeHolder.Location = new System.Drawing.Point(0, 0);
+			this.pnlPicMazeHolder.Name = "pnlPicMazeHolder";
+			this.pnlPicMazeHolder.Padding = new System.Windows.Forms.Padding(10);
+			this.pnlPicMazeHolder.Size = new System.Drawing.Size(631, 519);
+			this.pnlPicMazeHolder.TabIndex = 2;
             // 
             // btnStop
             // 
@@ -101,6 +132,36 @@
             this.lblAlgorithm.TabIndex = 2;
             this.lblAlgorithm.Text = "Algorithm :";
             this.lblAlgorithm.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// lblTurnCount
+			// 
+			this.lblTurnCount.Dock = System.Windows.Forms.DockStyle.Top;
+			this.lblTurnCount.Location = new System.Drawing.Point(160, 10);
+			this.lblTurnCount.Name = "lblTurnCount";
+			this.lblTurnCount.Size = new System.Drawing.Size(81, 27);
+			this.lblTurnCount.TabIndex = 2;
+			this.lblTurnCount.Text = "Turns : ";
+			this.lblTurnCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// lblMoveCount
+			// 
+			this.lblMoveCount.Dock = System.Windows.Forms.DockStyle.Top;
+			this.lblMoveCount.Location = new System.Drawing.Point(160, 10);
+			this.lblMoveCount.Name = "lblMoveCount";
+			this.lblMoveCount.Size = new System.Drawing.Size(81, 27);
+			this.lblMoveCount.TabIndex = 2;
+			this.lblMoveCount.Text = "Moves : ";
+			this.lblMoveCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// lblCellVisitedCount
+			// 
+			this.lblCellVisitedCount.Dock = System.Windows.Forms.DockStyle.Top;
+			this.lblCellVisitedCount.Location = new System.Drawing.Point(160, 10);
+			this.lblCellVisitedCount.Name = "lblCellVisitedCount";
+			this.lblCellVisitedCount.Size = new System.Drawing.Size(81, 27);
+			this.lblCellVisitedCount.TabIndex = 2;
+			this.lblCellVisitedCount.Text = "Unique Cells : ";
+			this.lblCellVisitedCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnEditMap
             // 
@@ -144,7 +205,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(631, 566);
-            this.Controls.Add(this.picMazeHolder);
+			this.Controls.Add (this.pnlPicMazeHolder);
             this.Controls.Add(this.panel1);
             this.Name = "mainForm";
             this.Text = "mainForm";
@@ -156,15 +217,19 @@
         }
 
         #endregion
-
         private System.Windows.Forms.PictureBox picMazeHolder;
         private System.Windows.Forms.Button btnLoadMap;
         private System.Windows.Forms.Button btnRun;
         public System.Windows.Forms.Panel panel1;
+		public System.Windows.Forms.Panel pnlPicMazeHolder;
+		public System.Windows.Forms.Panel pnlMazeSolvingStatusHolder;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label lblAlgorithm;
         private System.Windows.Forms.Button btnEditMap;
         private System.ComponentModel.BackgroundWorker algorithmRunner;
         private System.Windows.Forms.Button btnStop;
+		private System.Windows.Forms.Label lblTurnCount;
+		private System.Windows.Forms.Label lblMoveCount;
+		private System.Windows.Forms.Label lblCellVisitedCount;
     }
 }
