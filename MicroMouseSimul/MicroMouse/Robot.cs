@@ -288,13 +288,17 @@ namespace MicroMouseSimul.MicroMouse
         {
             switch (_direction)
             {
-                case enumDirection.North:
+				case enumDirection.North:
+					if (YLocation == 0) throw new Exception("there is no prev cell");
                     return cell[YLocation - 1, XLocation];
                 case enumDirection.South:
+					if (YLocation == 15)  throw new Exception("there is no prev cell");
                     return cell[YLocation + 1, XLocation];
                 case enumDirection.East:
+					if (XLocation == 0)  throw new Exception("there is no prev cell");
                     return cell[YLocation, XLocation - 1];
                 case enumDirection.West:
+					if (XLocation == 15)  throw new Exception("there is no prev cell");
                     return cell[YLocation, XLocation + 1];
                 default:
                     throw new Exception();

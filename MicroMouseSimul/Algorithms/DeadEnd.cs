@@ -36,11 +36,15 @@ namespace MicroMouseSimul.Algorithms
             }
             else if (ndeCount == 1)
             {
-                if (robot.GetPrevCell<int>(cellWatched) == -1)
-                    cellWatched[robot.YLocation, robot.XLocation] = -1;
-                else
-                    cellWatched[robot.YLocation, robot.XLocation]++;
-
+				try {
+					if (robot.GetPrevCell<int>(cellWatched) == -1)
+						cellWatched[robot.YLocation, robot.XLocation] = -1;
+					else
+						cellWatched[robot.YLocation, robot.XLocation]++;
+				} catch {
+					cellWatched[robot.YLocation, robot.XLocation]++;
+				}
+                
                 switch (orederdChoices[0])
                 {
                     case enumSide.Front:

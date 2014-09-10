@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MicroMouseSimul.MicroMouse;
-using Microsoft.VisualBasic.PowerPacks;
 
 namespace MicroMouseSimul
 {
@@ -26,9 +25,7 @@ namespace MicroMouseSimul
 
         private Label[,] lblLeftWalls = new Label[16, 17];
         private Label[,] lblTopWalls = new Label[17, 16];
-        private Label[,] lblCells = new Label[16, 16];
         private Dictionary<Label, bool> dicSelectedWalls = new Dictionary<Label, bool>();
-        private Dictionary<Label, int> dicCellWalls = new Dictionary<Label, int>();
 
         private MouseWorld world;
 
@@ -120,8 +117,6 @@ namespace MicroMouseSimul
             {
                 world.ValidateCells();
 
-                string[] lines = new string[16];
-
                 int[,] cells = new int[16, 16];
                 for (int i = 0; i < 17; i++)
                 {
@@ -155,7 +150,7 @@ namespace MicroMouseSimul
                     //MessageBox.Show(this, "Your map has been saved.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.Close();
                 }
-                catch (Exception ex)
+                catch
                 {
                     MessageBox.Show(this, "Something goes wrong. We couldnt save your map.\nPlease try again.", "Oops", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }

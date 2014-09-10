@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using MicroMouseSimul.Algorithms;
 
 
 namespace MicroMouseSimul.MicroMouse
@@ -13,6 +14,8 @@ namespace MicroMouseSimul.MicroMouse
     {
         public Maze _maze;
         public Robot _robot;
+        public IAlgorithm _algorithm;
+        private bool[,] cellVisited = new bool[16, 16];
 
         public MouseWorld()
         {
@@ -96,6 +99,78 @@ namespace MicroMouseSimul.MicroMouse
         internal Cell getCurrentCell()
         {
             return _maze.GetCells()[_robot.YLocation, _robot.XLocation];
+        }
+
+        bool isNotStarted = false;
+        public int count = 0;
+        public int turnCount = 0;
+        public int cellVisitedCount = 0;
+        private Dictionary<int, int> uniqueCells = new Dictionary<int, int>();
+        public bool Go_go_go()
+        {
+            if (_algorithm == null)
+            {
+                throw new Exception("Algorithm is not instantiated.");
+            }
+            var action = _algorithm.Think(_robot, getCurrentCell());
+            switch (action)
+            {
+                case enumRobotAction.TurnLeft:
+                    this._robot.TrunLeft();
+                    turnCount++;
+                    break;
+                case enumRobotAction.TurnRight:
+                    this._robot.TrunRight();
+                    turnCount++;
+                    break;
+                case enumRobotAction.TurnBack:
+                    this._robot.TrunBack();
+                    turnCount++;
+                    break;
+                default:
+                    break;
+            }
+            _robot.Go();
+            cellVisited[_robot.YLocation, _robot.XLocation] = true;
+            count++;
+            cellVisitedCount++;
+            if (!uniqueCells.ContainsKey(_robot.XLocation * 100 + _robot.YLocation))
+            {
+                uniqueCells.Add(_robot.XLocation * 100 + _robot.YLocation, 0);
+            }
+            uniqueCells[_robot.XLocation * 100 + _robot.YLocation]++;
+            cellVisitedCount = uniqueCells.Keys.Count;
+            return this.NotFinished();
+        }
+        public string GetCellData(int x, int y)
+        {
+            if (_algorithm == null)
+                return "";
+            else
+                return this._algorithm.GetCellData(x, y);
+        }
+
+        public void Start(IAlgorithm alg)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                for (int j = 0; j < 16; j++)
+                {
+                    cellVisited[i, j] = false;
+                }
+            }
+
+            cellVisited[0, 0] = true;
+            this._robot = new Robot();
+            this._algorithm = alg;
+            this.cellVisitedCount = 0;
+            this.count = 0;
+            this.turnCount = 0;
+            this.uniqueCells = new Dictionary<int, int>();
+        }
+        public bool[,] GetVisitedCells()
+        {
+            return cellVisited;
         }
     }
 }
