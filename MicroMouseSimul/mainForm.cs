@@ -21,7 +21,6 @@ namespace MicroMouseSimul
 		{
 			world = new MouseWorld ();
 			InitializeComponent ();
-			StoreNames (new String[] { "salam", "hey" }.ToList ());
 		}
 
 		public void StoreNames(List<string> input)
@@ -40,15 +39,24 @@ namespace MicroMouseSimul
 		}
 		private void mainForm_Load (object sender, EventArgs e)
 		{
+            comboBox1.SelectedIndex = 0;
 		}
 
 		private void picMazeHolder_Paint (object sender, PaintEventArgs e)
 		{
+            if (world != null)
+            {
+                lblMoveCount.Text = "Moves : " + world.count;
+                lblTurnCount.Text = "Turns : " + world.turnCount;
+                lblCellVisitedCount.Text = "Unique Cells : " + world.cellVisitedCount;
+            }
+            
 			var cells = world.GetMazeCells ();
+            var visitedCells = world.GetVisitedCells();
 			var g = e.Graphics;
 			for (int i = 0; i < 16; i++) {
 				for (int j = 0; j < 16; j++) {
-					drawCell (cells [i, j], i, j, g);
+					drawCell (cells [i, j],visitedCells[i,j] , i, j, g);
 					drawCellData (world.GetCellData (i, j), i, j, g);
 				}
 			}
@@ -98,9 +106,14 @@ namespace MicroMouseSimul
 			}
 		}
 
-		private void drawCell (Cell cellValue, int i, int j, Graphics g)
+		private void drawCell (Cell cellValue,bool visited, int i, int j, Graphics g)
 		{
-			var brush = new SolidBrush (Color.FromArgb (128, Color.Black));
+            SolidBrush brush ;
+            if (visited)
+                brush = new SolidBrush(Color.FromArgb(128, Color.Black));
+            else
+                brush = new SolidBrush(Color.FromArgb(16, Color.Black));
+
 			if (cellValue.NorthWall)
 				g.FillRectangle (brush, j * 32, (15 - i) * 32, 34, 2);
 			if (cellValue.EastWall)
@@ -158,55 +171,66 @@ namespace MicroMouseSimul
 
 		private void btnRun_Click (object sender, EventArgs e)
 		{
+            btnRun.Enabled = false;
+            btnLoadMap.Enabled = false;
+            btnEditMap.Enabled = false;
+            comboBox1.Enabled = false;
+            IAlgorithm selectedAlg;
+
+            switch (comboBox1.SelectedIndex)
+            {
+                case 0:
+                    selectedAlg = new WallFollower(false);
+                    break;
+                case 1:
+                    selectedAlg = new DeadEnd();
+                    break;
+                case 2:
+                default:
+                    selectedAlg = new FloodFill();
+                    break;
+            }
+            btnStop.Enabled = true;
+
+            world.Start(selectedAlg);
 			algorithmRunner.WorkerSupportsCancellation = false;
 			algorithmRunner.RunWorkerAsync ();
 		}
 
 		private void algorithmRunner_DoWork (object sender, DoWorkEventArgs e)
 		{
-			world._algorithm = new DeadEnd ();
-		
 			do {
 				picMazeHolder.Invalidate ();
 				System.Threading.Thread.CurrentThread.Join (150);
-			} while (world.Go_go_go());
+
+			} while (world.Go_go_go() && !algorithmRunner.WorkerSupportsCancellation);
 			picMazeHolder.Invalidate ();
 			System.Threading.Thread.CurrentThread.Join (150);
-
-//				moveCount++;
-//				lblTurnCount.Text = "Turns : " + turnCount;
-//				lblMoveCount.Text = "Moves : " + moveCount;
-//				if (cellVisited.ContainsKey(world._robot.XLocation*100+world._robot.YLocation))
-//				{
-//					cellVisited[world._robot.XLocation*100+world._robot.YLocation]++;
-//				}
-//				else
-//				{
-//					cellVisited[world._robot.XLocation*100+world._robot.YLocation]=1;
-//				}
-//				lblCellVisitedCount.Text = "Unique Cells : "+cellVisited.Keys.Count;
-//				picMazeHolder.Invalidate ();
-//				System.Threading.Thread.CurrentThread.Join (150);
-
 		}
 
 		private void btnStop_Click (object sender, EventArgs e)
 		{
 			algorithmRunner.WorkerSupportsCancellation = true;
 		}
+
+        private void algorithmRunner_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            btnRun.Enabled = true;
+            btnLoadMap.Enabled = true;
+            btnEditMap.Enabled = true;
+            comboBox1.Enabled = true;
+
+            btnStop.Enabled = false;
+        }
+
+        private void lblAlgorithm_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
 	}
-
-	public class ComboboxItem
-	{
-		public string Text { get; set; }
-		public object Value { get; set; }
-
-		public override string ToString()
-		{
-			return Text;
-		}
-	}
-
-
-
 }

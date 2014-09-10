@@ -31,13 +31,20 @@ namespace MicroMouseSimul.MicroMouse
             get { return _southWall; }
         }
 
-
-        public Cell(int pWalls)
+        private void construct(int pWalls)
         {
             _northWall = (pWalls % 2 != 0);
             _eastWall = ((pWalls / 2) % 2 != 0);
             _southWall = ((pWalls / 4) % 2 != 0);
             _westWall = ((pWalls / 8) % 2 != 0);
+        }
+        public Cell(int pWalls)
+        {
+            construct(pWalls);
+        }
+        public Cell()
+        {
+            construct(0);
         }
 
         /// <summary>
