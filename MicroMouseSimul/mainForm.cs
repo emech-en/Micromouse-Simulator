@@ -57,7 +57,7 @@ namespace MicroMouseSimul
 			for (int i = 0; i < 16; i++) {
 				for (int j = 0; j < 16; j++) {
 					drawCell (cells [i, j],visitedCells[i,j] , i, j, g);
-					drawCellData (world.GetCellData (i, j), i, j, g);
+                    //drawCellData (world.GetCellData (i, j), i, j, g);
 				}
 			}
 			drawRobot (world._robot, g);
